@@ -1,0 +1,28 @@
+FROM ybovard/ara:nginx
+MAINTAINER Yves Bovard <ybovard@gmail.com>
+
+COPY supervisor.conf /etc/supervisor/docker.conf
+COPY ansible.cfg /var/www/ara/ansible.cfg
+COPY ara.nginx /etc/nginx/conf.d/ara.conf
+COPY ara.uwsgi /etc/uwsgi/apps-available/ara.ini
+COPY wsgi.patch /root/wsgi.patch
+
+ENV ANSIBLE_CONFIG /var/www/ara/ansible.cfg
+
+EXPOSE 443
+EXPOSE 80
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/docker.conf"]
+
+RUN apt-get update -y
+RUN apt-get upgrade -y --no-install-recommends apt-utils
+RUN apt-get -y install supervisor \
+    && apt-get -y install gcc python-dev libffi-dev libssl-dev \
+    && apt-get -y install python-pip libxml2-dev libxslt1-dev \
+    && apt-get -y install apt-utils tree curl wget net-tools tcpdump dnsutils vim unzip tar gzip \
+    && pip install ansible==2.3.2.0 tox uwsgi ara pymysql
+RUN cp /usr/local/bin/ara-wsgi /var/www/ara/wsgi.py \
+    && cd /usr/local/lib/python2.7/dist-packages/ara
+RUN patch -p0 -f -verbose < /root/wsgi.patch \
+    && chown -R nginx:nginx /var/www/ara \
+#    && mkdir /var/log/uwsgi \
+    && chmod 777 /var/log/uwsgi
