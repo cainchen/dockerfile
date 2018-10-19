@@ -7,7 +7,7 @@
 
 > $ cd ara
 
-> $ sudo docker build -t="<path>/<image_name>" .
+> $ sudo docker build -t="[path]/[image_name]" .
 
 *You can modify the Dockerfile by you needs before you doing the docker build.*
 
