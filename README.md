@@ -13,6 +13,4 @@
 
 *Step 3.* Start a Docker container for the ARA.
 
-> $ sudo docker run --name ara -p 80:80 -e "ARA_DATABASE=mysql+pymysql://ara:password@<MySQL_Host_IP_or_FQDN>/ara" <path>/<image_name>
-
-
+> $ sudo docker run --name ara -p 80:80 -e "ARA_DATABASE=mysql+pymysql://ara:password@[MySQL_Host_IP_or_FQDN]/ara" [path]/[image_name]
